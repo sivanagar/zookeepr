@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('public'));
 
 function filterByQuery(query , animalsArray) {
     let personalityTraitsArray = [];
@@ -63,7 +64,7 @@ function createNewAnimal(body,animalsArray) {
     const animal = body;
     animalsArray.push(animal);
     fs.writeFileSync(
-        path.join(__dirname, './data/animals,json'),
+        path.join(__dirname, './data/animals.json'),
         JSON.stringify({animals: animalsArray},null, 2)
     )
 
@@ -100,4 +101,20 @@ app.post('/api/animals', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`API Server now on port ${PORT}`);
+})
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+})
+
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'))
+})
+
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'))
+})
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
 })
